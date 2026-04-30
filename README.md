@@ -1,129 +1,56 @@
-# دورك - نظام قوائم الانتظار الرقمية
+# دورك (Dawrak) - نظام إدارة الطوابير الرقمية الذكي 🚀
 
-نظام SaaS لإدارة قوائم الانتظار في المحلات الخدمية في مصر. بدل الطوابير الطويلة، الزبون يمسح QR Code ويحصل على رقم رقمي ويتابع دوره من موبايله.
+**دورك** هو نظام MVP متطور لإدارة قوائم الانتظار، مصمم خصيصاً للمحلات الخدمية (حلاقين، عيادات، مطاعم) في السوق العربي. النظام يعتمد على مبدأ "امسح الكود وخد رقمك" بدون الحاجة لتحميل أي تطبيق.
 
-## المميزات
+---
 
-- **للزبائن:** مسح QR Code -> أخذ رقم -> متابعة الدور لحظة بلحظة -> تنبيه قبل الدور
-- **لصاحب المحل:** لوحة تحكم بسيطة -> إدارة الطابور -> إحصائيات -> QR Code تلقائي
-- **بدون تحميل:** يعمل من المتصفح مباشرة
-- **Real-time:** تحديثات لحظية عبر Supabase Realtime
-- **موبايل أولاً:** تصميم متجاوب يعمل على كل الأجهزة
-- **عربي بالكامل:** واجهة RTL كاملة
+## 🛠 التكنولوجيا المستخدمة (Tech Stack)
+*   **Framework:** Next.js (App Router) - النسخة الحديثة (V16.x) مع دعم `Turbopack`.
+*   **Authentication:** [Clerk](https://clerk.com/) لإدارة حسابات أصحاب المحلات والأدمن.
+*   **Database & Realtime:** [Supabase](https://supabase.com/) (PostgreSQL) مع تفعيل الـ Realtime لتحديث الطابور لحظياً.
+*   **Styling:** Tailwind CSS + Shadcn UI.
+*   **Fonts:** Cairo (خط القاهرة) كخط أساسي للنظام لتوفير أفضل تجربة مستخدم عربية.
 
-## التقنيات المستخدمة
+---
 
-| التقنية | الاستخدام |
-|---------|-----------|
-| Next.js (App Router) | الإطار الأساسي |
-| TypeScript | لغة البرمجة |
-| Tailwind CSS + shadcn/ui | التصميم |
-| Clerk | تسجيل الدخول والمصادقة |
-| Supabase | قاعدة البيانات + Real-time |
-| Browser Push Notifications | التنبيهات |
-| QRCode.react | توليد QR Code |
+## 🏗 هيكل المشروع (Project Structure)
+*   `src/app/q/[slug]`: الصفحة العامة التي يراها الزبون بعد مسح الـ QR Code للانضمام للطابور.
+*   `src/app/dashboard`: لوحة تحكم صاحب المحل (إدارة الطابور، الإحصائيات، الـ QR Code، الإعدادات).
+*   `src/app/admin`: لوحة التحكم العليا (للأدمن فقط) لإدارة جميع المحلات وتعديل باقات الاشتراك.
+*   `src/proxy.ts`: المسؤول عن حماية المسارات (بديلاً لـ `middleware.ts` في هذه النسخة من Next.js).
+*   `src/lib/supabase`: إعدادات الربط مع قاعدة البيانات (Client & Server Components).
+*   `src/components`: تحتوي على المكونات الأساسية مثل `customer-queue.tsx` و `loading-skeleton.tsx`.
 
-## هيكل المشروع
+---
 
-```
-dawrak/
-├── src/
-│   ├── app/
-│   │   ├── page.tsx                    # صفحة الهبوط
-│   │   ├── layout.tsx                  # Layout رئيسي (RTL + Clerk)
-│   │   ├── not-found.tsx               # صفحة 404
-│   │   ├── q/[slug]/page.tsx           # صفحة الزبون (الطابور)
-│   │   ├── sign-in/[[...sign-in]]/     # تسجيل الدخول
-│   │   ├── sign-up/[[...sign-up]]/     # إنشاء حساب
-│   │   ├── dashboard/
-│   │   │   ├── layout.tsx              # Layout لوحة التحكم
-│   │   │   ├── page.tsx                # إدارة الطابور
-│   │   │   ├── setup/page.tsx          # إعداد المحل
-│   │   │   ├── stats/page.tsx          # الإحصائيات
-│   │   │   └── qrcode/page.tsx         # QR Code
-│   │   └── api/
-│   │       ├── queue/join/route.ts     # انضمام للطابور
-│   │       ├── queue/manage/route.ts   # إدارة الطابور
-│   │       └── shop/route.ts           # إدارة المحل
-│   ├── components/
-│   │   ├── ui/                         # مكونات shadcn/ui
-│   │   └── customer-queue.tsx          # مكون صفحة الزبون
-│   ├── lib/
-│   │   ├── supabase/
-│   │   │   ├── client.ts              # Supabase client-side
-│   │   │   └── server.ts             # Supabase server-side
-│   │   ├── types.ts                   # TypeScript types
-│   │   └── utils.ts                   # أدوات مساعدة
-│   └── middleware.ts                   # Clerk middleware
-├── supabase/
-│   └── migration.sql                   # SQL لإنشاء الجداول
-├── .env.local                          # متغيرات البيئة
-└── README.md
-```
+## ✨ الميزات الأساسية (Core Features)
+1.  **نظام الطابور الذكي:** حساب وقت الانتظار المتوقع بناءً على أداء المحل الفعلي خلال اليوم.
+2.  **نظام اشتراكات:** دعم 4 باقات (Free, Starter, Business, Premium) مع تحكم كامل من لوحة الأدمن.
+3.  **حماية ضد الإساءة (Anti-Abuse):** استخدام بصمة الجهاز (Device Fingerprinting) لمنع إنشاء عدة محلات مجانية من نفس الجهاز.
+4.  **تنبيهات صوتية وفورية:** تنبيه صوتي (Web Audio API) لصاحب المحل عند دخول زبون جديد، مع دعم Push Notifications للزبائن.
+5.  **ملاحظات الزبائن:** إمكانية إضافة ملاحظات (مثل نوع الخدمة المطلوبة) تظهر لصاحب المحل فوراً.
+6.  **الوضع الداكن (Dark Mode):** دعم كامل وشامل للوضع الليلي مع منع وميض الألوان عند التحميل (FOUC Prevention).
 
-## طريقة التشغيل
+---
 
-### 1. المتطلبات
-- Node.js 18+
-- حساب [Clerk](https://clerk.com) (مجاني)
-- حساب [Supabase](https://supabase.com) (مجاني)
+## 🔒 قاعدة البيانات (Database Schema)
+*   `shops`: بيانات المحلات (الاسم، الرابط `slug` الفريد، النوع، رسالة الترحيب).
+*   `queue_entries`: بيانات الزبائن (الاسم، رقم التذكرة، الملاحظات، الحالة: `waiting`, `serving`, `done`, `skipped`).
+*   `subscriptions`: تتبع باقات المحلات وحالتها.
+*   `daily_stats`: تخزين البيانات التاريخية للتحليل (أوقات الذروة، متوسط الانتظار).
+*   `device_fingerprints`: ربط بصمة الجهاز بحساب المستخدم للأمان.
 
-### 2. تثبيت المشروع
-```bash
-cd dawrak
-npm install
-```
+---
 
-### 3. إعداد قاعدة البيانات
-1. أنشئ مشروع جديد في Supabase
-2. اذهب إلى SQL Editor
-3. انسخ محتوى `supabase/migration.sql` ونفذه
-4. تأكد من تفعيل Realtime على جدول `queue_entries`
+## 📝 ملاحظات تقنية هامة (للإدارة والتطوير)
+*   **Middleware Migration:** تم تحويل `middleware.ts` إلى `proxy.ts` مع استخدام `export const proxy = ...` ليتوافق مع تحديثات Framework.
+*   **Environment Variables:**
+    *   `ADMIN_USER_ID`: يجب وضع الـ User ID الخاص بالأدمن من Clerk لفتح صلاحيات `/admin`.
+    *   `NEXT_PUBLIC_APP_URL`: يجب تحديثه لرابط الدومين النهائي (مثلاً `https://q-next.codro.me`) لضمان عمل الـ QR Code بشكل صحيح.
+*   **Performance:** النظام يستخدم `Dynamic Imports` و `Suspense` لضمان سرعة التحميل على شبكات الموبايل الضعيفة.
+*   **Database Updates:** عند إضافة ميزات جديدة، تأكد من تحديث ملف `supabase/migration_v2.sql` وتشغيله في Supabase.
 
-### 4. إعداد المتغيرات
-أنشئ ملف `.env.local` وأضف:
-```env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard/setup
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
+---
 
-### 5. تشغيل المشروع
-```bash
-npm run dev
-```
-المشروع هيشتغل على `http://localhost:3000`
-
-### 6. النشر على Vercel
-```bash
-npx vercel
-```
-
-## طريقة الاستخدام
-
-### لصاحب المحل:
-1. سجّل حساب من `/sign-up`
-2. أعد بيانات محلك من `/dashboard/setup`
-3. حمّل الـ QR Code من `/dashboard/qrcode`
-4. ابدأ استقبال الزبائن من `/dashboard`
-
-### للزبون:
-1. امسح QR Code بالموبايل
-2. ادخل اسمك (اختياري) واضغط "خد رقمك"
-3. تابع دورك وفعّل التنبيهات
-
-## قاعدة البيانات
-
-### جداول:
-- **shops** - بيانات المحلات
-- **queue_entries** - سجل الطابور (waiting/serving/done/skipped)
-- **daily_stats** - إحصائيات يومية
-
-## الرخصة
-MIT
+**تم التطوير بواسطة: Antigravity AI Assistant** 🚀
+**أبريل 2026**
