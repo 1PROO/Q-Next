@@ -22,6 +22,7 @@ export default function SetupPage() {
   const [slug, setSlug] = useState("");
   const [type, setType] = useState<ShopType>("barber");
   const [servicePoints, setServicePoints] = useState("1");
+  const [welcomeMessage, setWelcomeMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [existingShop, setExistingShop] = useState<Shop | null>(null);
@@ -38,6 +39,7 @@ export default function SetupPage() {
           setSlug(data.slug);
           setType(data.type);
           setServicePoints(String(data.service_points));
+          setWelcomeMessage(data.welcome_message || "");
         }
       }
       setPageLoading(false);
@@ -68,6 +70,7 @@ export default function SetupPage() {
           slug: generateSlug(slug),
           type,
           service_points: parseInt(servicePoints) || 1,
+          welcome_message: welcomeMessage,
         }),
       });
 
@@ -76,6 +79,31 @@ export default function SetupPage() {
       } else {
         const data = await res.json();
         setError(data.error || "حدث خطأ");
+      }
+    } catch {
+      setError("حدث خطأ في الاتصال");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleUpdateSettings() {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/shop", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          welcome_message: welcomeMessage,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setExistingShop(data);
+        setError(""); // Clear any previous errors
+      } else {
+        setError("فشل في التحديث");
       }
     } catch {
       setError("حدث خطأ في الاتصال");
@@ -94,14 +122,14 @@ export default function SetupPage() {
 
   if (existingShop) {
     return (
-      <div className="max-w-lg mx-auto">
-        <Card className="shadow-lg border-green-200">
+      <div className="max-w-lg mx-auto space-y-6">
+        <Card className="shadow-lg border-green-200 dark:border-green-800">
           <CardContent className="p-8 text-center">
             <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               محلك مُعد بالفعل!
             </h2>
-            <p className="text-gray-500 mb-2">
+            <p className="text-gray-500 dark:text-gray-400 mb-2">
               <strong>{existingShop.name}</strong>
             </p>
             <p className="text-gray-400 text-sm mb-6">
@@ -123,6 +151,49 @@ export default function SetupPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Welcome message settings */}
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-lg dark:text-white">إعدادات إضافية</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="welcomeMessage">رسالة ترحيبية للزبائن</Label>
+              <Input
+                id="welcomeMessage"
+                placeholder="مثال: أهلاً بيك في صالون أحمد! ✂️"
+                value={welcomeMessage}
+                onChange={(e) => setWelcomeMessage(e.target.value)}
+                className="mt-1.5"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                تظهر هذه الرسالة للزبون عند دخوله صفحة الطابور
+              </p>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg p-3 text-sm">
+                {error}
+              </div>
+            )}
+
+            <Button
+              onClick={handleUpdateSettings}
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-5 w-5 ml-2 animate-spin" />
+                  جاري الحفظ...
+                </>
+              ) : (
+                "حفظ الإعدادات"
+              )}
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -131,11 +202,11 @@ export default function SetupPage() {
     <div className="max-w-lg mx-auto">
       <Card className="shadow-lg">
         <CardHeader className="text-center">
-          <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <Store className="h-8 w-8 text-blue-600" />
+          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <Store className="h-8 w-8 text-blue-600 dark:text-blue-400" />
           </div>
-          <CardTitle className="text-2xl">إعداد المحل</CardTitle>
-          <p className="text-gray-500">أدخل بيانات محلك عشان تبدأ تستقبل زبائن</p>
+          <CardTitle className="text-2xl dark:text-white">إعداد المحل</CardTitle>
+          <p className="text-gray-500 dark:text-gray-400">أدخل بيانات محلك عشان تبدأ تستقبل زبائن</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -212,8 +283,22 @@ export default function SetupPage() {
               </p>
             </div>
 
+            <div>
+              <Label htmlFor="welcomeMsg">رسالة ترحيبية (اختياري)</Label>
+              <Input
+                id="welcomeMsg"
+                placeholder="مثال: أهلاً بيك! ✂️"
+                value={welcomeMessage}
+                onChange={(e) => setWelcomeMessage(e.target.value)}
+                className="mt-1.5"
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                تظهر هذه الرسالة للزبون عند دخوله صفحة الطابور
+              </p>
+            </div>
+
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-3 text-sm">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg p-3 text-sm">
                 {error}
               </div>
             )}

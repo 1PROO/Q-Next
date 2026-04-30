@@ -1,84 +1,89 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
-import { LayoutDashboard, Settings, BarChart3, QrCode } from "lucide-react";
+import { LayoutDashboard, BarChart3, QrCode, Settings, CreditCard, Moon, Sun } from "lucide-react";
+import { useDarkMode } from "@/lib/hooks/use-dark-mode";
+import { Button } from "@/components/ui/button";
+
+const navItems = [
+  { href: "/dashboard", label: "الطابور", icon: LayoutDashboard },
+  { href: "/dashboard/stats", label: "إحصائيات", icon: BarChart3 },
+  { href: "/dashboard/qrcode", label: "QR Code", icon: QrCode },
+  { href: "/dashboard/subscription", label: "الاشتراك", icon: CreditCard },
+  { href: "/dashboard/setup", label: "إعدادات", icon: Settings },
+];
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const { isDark, toggle } = useDarkMode();
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Top Navbar */}
-      <nav className="bg-white border-b sticky top-0 z-50">
+      <nav className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 sticky top-0 z-50 transition-colors">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-xl font-extrabold text-blue-600">
+            <Link href="/" className="text-xl font-extrabold text-blue-600 dark:text-blue-400">
               دورك
             </Link>
             <div className="hidden md:flex items-center gap-1">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                <LayoutDashboard className="h-4 w-4" />
-                الطابور
-              </Link>
-              <Link
-                href="/dashboard/stats"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                <BarChart3 className="h-4 w-4" />
-                الإحصائيات
-              </Link>
-              <Link
-                href="/dashboard/qrcode"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                <QrCode className="h-4 w-4" />
-                QR Code
-              </Link>
-              <Link
-                href="/dashboard/setup"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                <Settings className="h-4 w-4" />
-                إعدادات المحل
-              </Link>
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      isActive
+                        ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
           </div>
-          <UserButton />
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggle}
+              className="h-9 w-9 p-0 text-gray-600 dark:text-gray-300"
+              aria-label={isDark ? "الوضع الفاتح" : "الوضع الداكن"}
+            >
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
+            <UserButton />
+          </div>
         </div>
         {/* Mobile nav */}
-        <div className="md:hidden border-t flex items-center justify-around py-2">
-          <Link
-            href="/dashboard"
-            className="flex flex-col items-center gap-1 px-3 py-1 text-xs text-gray-600"
-          >
-            <LayoutDashboard className="h-5 w-5" />
-            الطابور
-          </Link>
-          <Link
-            href="/dashboard/stats"
-            className="flex flex-col items-center gap-1 px-3 py-1 text-xs text-gray-600"
-          >
-            <BarChart3 className="h-5 w-5" />
-            إحصائيات
-          </Link>
-          <Link
-            href="/dashboard/qrcode"
-            className="flex flex-col items-center gap-1 px-3 py-1 text-xs text-gray-600"
-          >
-            <QrCode className="h-5 w-5" />
-            QR Code
-          </Link>
-          <Link
-            href="/dashboard/setup"
-            className="flex flex-col items-center gap-1 px-3 py-1 text-xs text-gray-600"
-          >
-            <Settings className="h-5 w-5" />
-            إعدادات
-          </Link>
+        <div className="md:hidden border-t dark:border-gray-700 flex items-center justify-around py-2 overflow-x-auto">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center gap-1 px-3 py-1 text-xs transition-colors ${
+                  isActive
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-400"
+                }`}
+              >
+                <item.icon className="h-5 w-5" />
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
       </nav>
 

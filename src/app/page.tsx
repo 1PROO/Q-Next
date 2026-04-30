@@ -65,16 +65,19 @@ const steps = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* Navbar */}
-      <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-extrabold text-blue-600">
+          <Link href="/" className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
             دورك
           </Link>
           <div className="flex items-center gap-3">
+            <Link href="/pricing">
+              <Button variant="ghost" className="text-base dark:text-gray-300">الأسعار</Button>
+            </Link>
             <Link href="/sign-in">
-              <Button variant="ghost" className="text-base">تسجيل الدخول</Button>
+              <Button variant="ghost" className="text-base dark:text-gray-300">تسجيل الدخول</Button>
             </Link>
             <Link href="/sign-up">
               <Button className="text-base bg-blue-600 hover:bg-blue-700">
@@ -87,16 +90,16 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="max-w-6xl mx-auto px-4 pt-20 pb-16 text-center">
-        <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+        <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
           <CheckCircle2 className="h-4 w-4" />
-          مجاني بالكامل - بدون بطاقة ائتمان
+          مجاني بالكامل لأول 100 محل - بدون بطاقة ائتمان
         </div>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">
           وداعاً للطوابير الطويلة
           <br />
-          <span className="text-blue-600">أهلاً بالنظام الرقمي</span>
+          <span className="text-blue-600 dark:text-blue-400">أهلاً بالنظام الرقمي</span>
         </h1>
-        <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
           نظام ذكي لإدارة قوائم الانتظار. زبائنك ياخدوا رقمهم من الموبايل
           ويتابعوا دورهم لحظة بلحظة بدون ما يفضلوا واقفين
         </p>
@@ -110,13 +113,13 @@ export default function LandingPage() {
               <ArrowLeft className="mr-2 h-5 w-5" />
             </Button>
           </Link>
-          <Link href="#how-it-works">
+          <Link href="/pricing">
             <Button
               variant="outline"
               size="lg"
-              className="text-lg px-8 py-6 rounded-xl"
+              className="text-lg px-8 py-6 rounded-xl dark:border-gray-600 dark:text-gray-200"
             >
-              إزاي بيشتغل؟
+              عرض الأسعار
             </Button>
           </Link>
         </div>
@@ -125,10 +128,10 @@ export default function LandingPage() {
       {/* Features */}
       <section className="max-w-6xl mx-auto px-4 py-20">
         <div className="text-center mb-14">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             كل اللي محتاجه في مكان واحد
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
             أدوات بسيطة وفعّالة لإدارة طابور محلك
           </p>
         </div>
@@ -136,16 +139,16 @@ export default function LandingPage() {
           {features.map((feature) => (
             <Card
               key={feature.title}
-              className="border-0 shadow-md hover:shadow-lg transition-shadow bg-white"
+              className="border-0 shadow-md hover:shadow-lg transition-all hover:-translate-y-1 bg-white dark:bg-gray-800"
             >
               <CardContent className="p-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-                  <feature.icon className="h-6 w-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center mb-4">
+                  <feature.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   {feature.description}
                 </p>
               </CardContent>
@@ -155,24 +158,24 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="bg-gray-50 py-20">
+      <section id="how-it-works" className="bg-gray-50 dark:bg-gray-800/50 py-20">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               إزاي بيشتغل؟
             </h2>
-            <p className="text-gray-600 text-lg">ثلاث خطوات بس وتبدأ</p>
+            <p className="text-gray-600 dark:text-gray-400 text-lg">ثلاث خطوات بس وتبدأ</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((step) => (
               <div key={step.number} className="text-center">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-4 shadow-lg shadow-blue-600/30">
                   {step.number}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   {step.description}
                 </p>
               </div>
@@ -184,7 +187,7 @@ export default function LandingPage() {
       {/* Shop types */}
       <section className="max-w-6xl mx-auto px-4 py-20">
         <div className="text-center mb-14">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             يناسب كل أنواع المحلات
           </h2>
         </div>
@@ -202,7 +205,7 @@ export default function LandingPage() {
           ].map((type) => (
             <span
               key={type}
-              className="px-6 py-3 bg-white border-2 border-gray-200 rounded-full text-gray-700 font-medium hover:border-blue-300 hover:text-blue-600 transition-colors"
+              className="px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-full text-gray-700 dark:text-gray-300 font-medium hover:border-blue-300 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-default"
             >
               {type}
             </span>
@@ -211,7 +214,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-blue-600 py-16">
+      <section className="bg-blue-600 dark:bg-blue-700 py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
             جاهز تنظّم طابور محلك؟
@@ -219,16 +222,27 @@ export default function LandingPage() {
           <p className="text-blue-100 text-lg mb-8">
             سجّل الآن مجاناً وابدأ في أقل من دقيقة
           </p>
-          <Link href="/sign-up">
-            <Button
-              size="lg"
-              variant="secondary"
-              className="text-lg px-8 py-6 rounded-xl font-bold"
-            >
-              سجّل محلك الآن
-              <ArrowLeft className="mr-2 h-5 w-5" />
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/sign-up">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="text-lg px-8 py-6 rounded-xl font-bold"
+              >
+                سجّل محلك الآن
+                <ArrowLeft className="mr-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/pricing">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-6 rounded-xl font-bold border-white/30 text-white hover:bg-white/10"
+              >
+                عرض الباقات
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -239,6 +253,19 @@ export default function LandingPage() {
           <p className="text-sm">
             نظام قوائم الانتظار الرقمية - صنع بحب في مصر
           </p>
+          <div className="flex items-center justify-center gap-4 mt-4">
+            <Link href="/pricing" className="text-sm hover:text-white transition-colors">
+              الأسعار
+            </Link>
+            <span>·</span>
+            <Link href="/sign-in" className="text-sm hover:text-white transition-colors">
+              تسجيل الدخول
+            </Link>
+            <span>·</span>
+            <Link href="/sign-up" className="text-sm hover:text-white transition-colors">
+              إنشاء حساب
+            </Link>
+          </div>
           <p className="text-xs mt-4">
             &copy; {new Date().getFullYear()} دورك. جميع الحقوق محفوظة.
           </p>

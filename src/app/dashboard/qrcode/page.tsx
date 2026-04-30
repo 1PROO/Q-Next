@@ -76,10 +76,10 @@ export default function QRCodePage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         <AlertCircle className="h-16 w-16 text-yellow-500 mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           لسه ما أعددت محلك
         </h2>
-        <p className="text-gray-500 mb-6">أعد محلك الأول عشان تحصل على QR Code</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">أعد محلك الأول عشان تحصل على QR Code</p>
         <Link href="/dashboard/setup">
           <Button className="bg-blue-600 hover:bg-blue-700">إعداد المحل</Button>
         </Link>
@@ -90,18 +90,18 @@ export default function QRCodePage() {
   return (
     <div className="max-w-lg mx-auto space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900">QR Code المحل</h1>
-        <p className="text-gray-500">اطبعه وعلّقه في مكان واضح للزبائن</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">QR Code المحل</h1>
+        <p className="text-gray-500 dark:text-gray-400">اطبعه وعلّقه في مكان واضح للزبائن</p>
       </div>
 
       <Card className="shadow-lg">
         <CardHeader className="text-center pb-2">
-          <CardTitle className="text-xl">{shop.name}</CardTitle>
+          <CardTitle className="text-xl dark:text-white">{shop.name}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center p-8">
           <div
             ref={qrRef}
-            className="bg-white p-6 rounded-2xl border-2 border-gray-100 mb-6"
+            className="bg-white p-6 rounded-2xl border-2 border-gray-100 dark:border-gray-800 mb-6"
           >
             <QRCodeSVG
               value={queueUrl}
@@ -113,7 +113,7 @@ export default function QRCodePage() {
             />
           </div>
 
-          <p className="text-sm text-gray-400 mb-6 text-center" dir="ltr">
+          <p className="text-sm text-gray-400 dark:text-gray-500 mb-6 text-center" dir="ltr">
             {queueUrl}
           </p>
 
@@ -128,11 +128,11 @@ export default function QRCodePage() {
             <Button
               variant="outline"
               onClick={copyLink}
-              className="flex-1"
+              className="flex-1 dark:border-gray-700"
             >
               {copied ? (
                 <>
-                  <CheckCircle2 className="h-4 w-4 ml-2 text-green-600" />
+                  <CheckCircle2 className="h-4 w-4 ml-2 text-green-600 dark:text-green-400" />
                   تم النسخ!
                 </>
               ) : (
@@ -146,13 +146,13 @@ export default function QRCodePage() {
         </CardContent>
       </Card>
 
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
         <CardContent className="p-5">
           <div className="flex items-start gap-3">
-            <QrCode className="h-6 w-6 text-blue-600 mt-0.5" />
+            <QrCode className="h-6 w-6 text-blue-600 dark:text-blue-400 mt-0.5" />
             <div>
-              <h3 className="font-bold text-blue-900 mb-1">نصيحة</h3>
-              <p className="text-sm text-blue-700 leading-relaxed">
+              <h3 className="font-bold text-blue-900 dark:text-blue-300 mb-1">نصيحة</h3>
+              <p className="text-sm text-blue-700 dark:text-blue-400 leading-relaxed">
                 اطبع الـ QR Code بحجم كبير وعلّقه عند المدخل أو عند كاونتر
                 الاستقبال. الزبائن هيمسحوه من موبايلاتهم ويحصلوا على رقمهم
                 فوراً.

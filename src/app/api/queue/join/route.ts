@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { shop_id, customer_name } = body;
+    const { shop_id, customer_name, customer_notes } = body;
 
     if (!shop_id) {
       return NextResponse.json(
@@ -21,6 +21,8 @@ export async function POST(request: NextRequest) {
       { p_shop_id: shop_id }
     );
 
+    let ticketNumber: number;
+
     if (ticketError) {
       // Fallback: manual calculation
       const { data: lastEntry } = await supabase
@@ -32,36 +34,17 @@ export async function POST(request: NextRequest) {
         .limit(1)
         .single();
 
-      const nextNumber = (lastEntry?.ticket_number || 0) + 1;
-
-      const { data: entry, error: insertError } = await supabase
-        .from("queue_entries")
-        .insert({
-          shop_id,
-          customer_name: customer_name || null,
-          ticket_number: nextNumber,
-          status: "waiting",
-        })
-        .select()
-        .single();
-
-      if (insertError) {
-        return NextResponse.json(
-          { error: "فشل في الانضمام للطابور" },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json(entry);
+      ticketNumber = (lastEntry?.ticket_number || 0) + 1;
+    } else {
+      ticketNumber = ticketData as number;
     }
-
-    const ticketNumber = ticketData as number;
 
     const { data: entry, error: insertError } = await supabase
       .from("queue_entries")
       .insert({
         shop_id,
         customer_name: customer_name || null,
+        customer_notes: customer_notes || "",
         ticket_number: ticketNumber,
         status: "waiting",
       })

@@ -90,10 +90,10 @@ export default function StatsPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         <AlertCircle className="h-16 w-16 text-yellow-500 mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           لسه ما أعددت محلك
         </h2>
-        <p className="text-gray-500 mb-6">أعد محلك الأول عشان تشوف الإحصائيات</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">أعد محلك الأول عشان تشوف الإحصائيات</p>
         <Link href="/dashboard/setup">
           <Button className="bg-blue-600 hover:bg-blue-700">إعداد المحل</Button>
         </Link>
@@ -108,46 +108,46 @@ export default function StatsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">الإحصائيات</h1>
-        <p className="text-gray-500">نظرة عامة على أداء محلك</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">الإحصائيات</h1>
+        <p className="text-gray-500 dark:text-gray-400">نظرة عامة على أداء محلك</p>
       </div>
 
       {/* Today Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-blue-50 border-blue-200">
+        <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
           <CardContent className="p-5 text-center">
-            <Users className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-            <p className="text-3xl font-bold text-blue-700">
+            <Users className="h-8 w-8 text-blue-600 dark:text-blue-400 mx-auto mb-2" />
+            <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">
               {todayStats?.total_customers || 0}
             </p>
-            <p className="text-sm text-gray-500">زبائن اليوم</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">زبائن اليوم</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-green-50 border-green-200">
+        <Card className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
           <CardContent className="p-5 text-center">
-            <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <p className="text-3xl font-bold text-green-700">{todayServed}</p>
-            <p className="text-sm text-gray-500">تمت خدمتهم</p>
+            <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-400 mx-auto mb-2" />
+            <p className="text-3xl font-bold text-green-700 dark:text-green-300">{todayServed}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">تمت خدمتهم</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-orange-50 border-orange-200">
+        <Card className="bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800">
           <CardContent className="p-5 text-center">
-            <Clock className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-            <p className="text-3xl font-bold text-orange-700">
+            <Clock className="h-8 w-8 text-orange-600 dark:text-orange-400 mx-auto mb-2" />
+            <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">
               {todayStats?.avg_wait_time || 0}
               <span className="text-sm font-normal mr-1">د</span>
             </p>
-            <p className="text-sm text-gray-500">متوسط الانتظار</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">متوسط الانتظار</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-purple-50 border-purple-200">
+        <Card className="bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800">
           <CardContent className="p-5 text-center">
-            <Calendar className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-            <p className="text-xl font-bold text-purple-700">{peakHourLabel}</p>
-            <p className="text-sm text-gray-500">ساعة الذروة</p>
+            <Calendar className="h-8 w-8 text-purple-600 dark:text-purple-400 mx-auto mb-2" />
+            <p className="text-xl font-bold text-purple-700 dark:text-purple-300">{peakHourLabel}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">ساعة الذروة</p>
           </CardContent>
         </Card>
       </div>
@@ -155,7 +155,7 @@ export default function StatsPage() {
       {/* Weekly History */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">آخر 7 أيام</CardTitle>
+          <CardTitle className="text-lg dark:text-white">آخر 7 أيام</CardTitle>
         </CardHeader>
         <CardContent>
           {weekStats.length === 0 ? (
@@ -169,10 +169,10 @@ export default function StatsPage() {
               {weekStats.map((stat) => (
                 <div
                   key={stat.id}
-                  className="flex items-center justify-between bg-gray-50 rounded-xl p-4"
+                  className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4"
                 >
                   <div>
-                    <p className="font-medium text-gray-800">
+                    <p className="font-medium text-gray-800 dark:text-gray-200">
                       {new Date(stat.date).toLocaleDateString("ar-EG", {
                         weekday: "long",
                         month: "long",
@@ -182,22 +182,22 @@ export default function StatsPage() {
                   </div>
                   <div className="flex items-center gap-6 text-sm">
                     <div className="text-center">
-                      <p className="font-bold text-blue-600">
+                      <p className="font-bold text-blue-600 dark:text-blue-400">
                         {stat.total_customers}
                       </p>
-                      <p className="text-gray-400">زبون</p>
+                      <p className="text-gray-400 dark:text-gray-500">زبون</p>
                     </div>
                     <div className="text-center">
-                      <p className="font-bold text-orange-600">
+                      <p className="font-bold text-orange-600 dark:text-orange-400">
                         {stat.avg_wait_time}د
                       </p>
-                      <p className="text-gray-400">انتظار</p>
+                      <p className="text-gray-400 dark:text-gray-500">انتظار</p>
                     </div>
                     <div className="text-center">
-                      <p className="font-bold text-purple-600">
+                      <p className="font-bold text-purple-600 dark:text-purple-400">
                         {stat.peak_hour}:00
                       </p>
-                      <p className="text-gray-400">ذروة</p>
+                      <p className="text-gray-400 dark:text-gray-500">ذروة</p>
                     </div>
                   </div>
                 </div>
