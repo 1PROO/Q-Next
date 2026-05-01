@@ -17,12 +17,23 @@ export const metadata: Metadata = {
     "نظام ذكي لإدارة قوائم الانتظار في المحلات الخدمية. وداعاً للطوابير الطويلة!",
   keywords: ["قوائم انتظار", "طابور رقمي", "إدارة المحلات", "دورك"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "دورك - نظام قوائم الانتظار الرقمية",
     description: "نظام ذكي لإدارة قوائم الانتظار. وداعاً للطوابير الطويلة!",
     type: "website",
     locale: "ar_EG",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
