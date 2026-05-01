@@ -99,6 +99,18 @@ export default function AdminPage() {
     setActionLoading(null);
   }
 
+  async function giftDays(shopId: string, days: number) {
+    if (!days || days <= 0) return;
+    setActionLoading(shopId);
+    await fetch("/api/admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "gift_days", shop_id: shopId, days }),
+    });
+    await fetchData();
+    setActionLoading(null);
+  }
+
   if (loading) return <AdminSkeleton />;
 
   if (unauthorized) {
