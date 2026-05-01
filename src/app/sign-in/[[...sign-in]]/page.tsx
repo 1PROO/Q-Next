@@ -9,6 +9,7 @@ export default function SignInPage() {
           elements: {
             rootBox: "mx-auto",
             card: "shadow-xl",
+            headerSubtitle: "hidden",
           },
         }}
       />

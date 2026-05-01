@@ -26,9 +26,13 @@ export default function QRCodePage() {
     fetchShop();
   }, []);
 
-  const queueUrl = shop
-    ? `${typeof window !== "undefined" ? window.location.origin : ""}/q/${shop.slug}`
-    : "";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.includes("localhost") === false
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : typeof window !== "undefined"
+      ? window.location.origin
+      : "";
+
+  const queueUrl = shop ? `${baseUrl}/q/${shop.slug}` : "";
 
   function downloadQR() {
     if (!qrRef.current) return;
