@@ -32,7 +32,7 @@ export default function QRCodePage() {
       ? window.location.origin
       : "";
 
-  const subscription = (shop as any).subscription;
+  const subscription = (shop as any)?.subscription;
   const isFree = !subscription || subscription.plan === "free";
   const queueUrl = shop ? `${baseUrl}/q/${shop.slug}${isFree ? `?k=${shop.qr_code_key}` : ""}` : "";
 
