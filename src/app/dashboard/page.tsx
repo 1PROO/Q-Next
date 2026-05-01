@@ -18,6 +18,7 @@ import {
   MessageSquare,
   Volume2,
   VolumeX,
+  ShieldAlert,
 } from "lucide-react";
 import Link from "next/link";
 import { playNotificationSound } from "@/lib/notification-sound";
@@ -170,7 +171,17 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{shop.name}</h1>
-          <p className="text-gray-500 dark:text-gray-400">إدارة الطابور</p>
+          <div className="flex items-center gap-2">
+            <p className="text-gray-500 dark:text-gray-400">إدارة الطابور</p>
+            {(shop as any).isAdmin && (
+              <Link href="/admin">
+                <Button variant="ghost" size="sm" className="h-7 text-[10px] bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 border border-red-100 dark:border-red-800 rounded-full px-2">
+                  <ShieldAlert className="h-3 w-3 ml-1" />
+                  لوحة الأدمن
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Button

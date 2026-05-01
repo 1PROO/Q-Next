@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { auth } from "@clerk/nextjs/server";
 
 async function isAdmin(userId: string) {
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     const searchParams = request.nextUrl.searchParams;
     const action = searchParams.get("action");
 
@@ -61,7 +62,7 @@ export async function GET(request: NextRequest) {
         .select("plan")
         .eq("status", "active");
 
-      const planCounts: Record<string, number> = { free: 0, starter: 0, business: 0, premium: 0 };
+      const planCounts: Record<string, number> = { free: 0, starter: 0, business: 0, premium: 0, lifetime: 0 };
       subs?.forEach((s) => {
         planCounts[s.plan] = (planCounts[s.plan] || 0) + 1;
       });
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { action, shop_id, plan, status: newStatus } = body;
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     if (action === "toggle_active") {
       const { data: shop } = await supabase
@@ -147,6 +148,7 @@ export async function POST(request: NextRequest) {
             plan: plan || "free",
             status: newStatus || "active",
             updated_at: new Date().toISOString(),
+            expires_at: plan === "lifetime" ? null : body.expires_at || null,
           })
           .eq("id", existingSub.id);
       } else {
@@ -154,10 +156,52 @@ export async function POST(request: NextRequest) {
           shop_id,
           plan: plan || "free",
           status: newStatus || "active",
+          expires_at: plan === "lifetime" ? null : body.expires_at || null,
         });
       }
 
       return NextResponse.json({ success: true });
+    }
+
+    if (action === "gift_days") {
+      const { days } = body;
+      const { data: existingSub } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("shop_id", shop_id)
+        .single();
+
+      let newExpiresAt = new Date();
+      
+      if (existingSub && existingSub.expires_at) {
+        const currentExpires = new Date(existingSub.expires_at);
+        // If already expired, start from now, otherwise extend
+        const startFrom = currentExpires > new Date() ? currentExpires : new Date();
+        newExpiresAt = new Date(startFrom.getTime() + days * 24 * 60 * 60 * 1000);
+      } else {
+        newExpiresAt.setDate(newExpiresAt.getDate() + days);
+      }
+
+      if (existingSub) {
+        await supabase
+          .from("subscriptions")
+          .update({
+            plan: "premium",
+            status: "active",
+            expires_at: newExpiresAt.toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", existingSub.id);
+      } else {
+        await supabase.from("subscriptions").insert({
+          shop_id,
+          plan: "premium",
+          status: "active",
+          expires_at: newExpiresAt.toISOString(),
+        });
+      }
+
+      return NextResponse.json({ success: true, expires_at: newExpiresAt });
     }
 
     return NextResponse.json({ error: "إجراء غير معروف" }, { status: 400 });

@@ -15,6 +15,40 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient();
 
+    // Fetch shop and active subscription info
+    const { data: shop, error: shopError } = await supabase
+      .from("shops")
+      .select("*, subscriptions(*)")
+      .eq("id", shop_id)
+      .eq("subscriptions.status", "active")
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`, { foreignTable: "subscriptions" })
+      .single();
+
+    if (shopError || !shop) {
+      return NextResponse.json({ error: "المحل غير موجود" }, { status: 404 });
+    }
+
+    const subscription = shop.subscriptions?.[0];
+    const isFree = !subscription || subscription.plan === "free";
+
+    // Daily Limit Check for Free Plan
+    if (isFree) {
+      const today = new Date().toISOString().split("T")[0];
+      const { data: stats } = await supabase
+        .from("daily_stats")
+        .select("total_customers")
+        .eq("shop_id", shop_id)
+        .eq("date", today)
+        .single();
+
+      if (stats && stats.total_customers >= 20) {
+        return NextResponse.json(
+          { error: "تم الوصول للحد اليومي للزبائن في النسخة المجانية" },
+          { status: 403 }
+        );
+      }
+    }
+
     // Get next ticket number
     const { data: ticketData, error: ticketError } = await supabase.rpc(
       "get_next_ticket_number",

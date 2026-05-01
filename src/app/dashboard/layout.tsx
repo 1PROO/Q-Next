@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
-import { LayoutDashboard, BarChart3, QrCode, Settings, CreditCard, Moon, Sun } from "lucide-react";
+import { LayoutDashboard, BarChart3, QrCode, Settings, CreditCard, Moon, Sun, Palette } from "lucide-react";
 import { useDarkMode } from "@/lib/hooks/use-dark-mode";
 import { Button } from "@/components/ui/button";
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/dashboard", label: "الطابور", icon: LayoutDashboard },
   { href: "/dashboard/stats", label: "إحصائيات", icon: BarChart3 },
   { href: "/dashboard/qrcode", label: "QR Code", icon: QrCode },
+  { href: "/dashboard/customize", label: "تخصيص", icon: Palette },
   { href: "/dashboard/subscription", label: "الاشتراك", icon: CreditCard },
   { href: "/dashboard/setup", label: "إعدادات", icon: Settings },
 ];

@@ -32,7 +32,9 @@ export default function QRCodePage() {
       ? window.location.origin
       : "";
 
-  const queueUrl = shop ? `${baseUrl}/q/${shop.slug}` : "";
+  const subscription = (shop as any).subscription;
+  const isFree = !subscription || subscription.plan === "free";
+  const queueUrl = shop ? `${baseUrl}/q/${shop.slug}${isFree ? `?k=${shop.qr_code_key}` : ""}` : "";
 
   function downloadQR() {
     if (!qrRef.current) return;
@@ -147,6 +149,15 @@ export default function QRCodePage() {
               )}
             </Button>
           </div>
+
+          {isFree && (
+            <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-center">
+              <p className="text-xs text-amber-700 dark:text-amber-400">
+                ⚠️ في النسخة المجانية، الـ QR Code بيتغير كل يومين للأمان.
+                اشترك في النسخة <strong>مدى الحياة</strong> للحصول على كود ثابت.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 

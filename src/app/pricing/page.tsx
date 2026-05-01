@@ -10,76 +10,38 @@ const plans = [
     name: "مجاني",
     price: "0",
     period: "",
-    description: "لأول 100 محل يسجل",
+    description: "ابدأ الآن مجاناً",
     icon: CheckCircle2,
     color: "blue",
     features: [
-      "حتى 50 أوردر/يوم",
-      "QR Code مخصص",
-      "إدارة الطابور",
+      "حتى 20 زبون/يوم",
+      "إدارة الطابور بالكامل",
       "تنبيهات المتصفح",
       "إحصائيات أساسية",
+      "QR Code يتغير كل يومين",
     ],
     cta: "ابدأ مجاناً",
     popular: false,
   },
   {
-    id: "starter",
-    name: "ستارتر",
-    price: "149",
-    period: "/شهر",
-    description: "للمحلات الصغيرة",
-    icon: Star,
-    color: "indigo",
-    features: [
-      "حتى 50 زبون/يوم",
-      "QR Code مخصص",
-      "إدارة الطابور",
-      "تنبيهات المتصفح",
-      "إحصائيات أساسية",
-      "رسالة ترحيبية مخصصة",
-    ],
-    cta: "اشترك الآن",
-    popular: false,
-  },
-  {
-    id: "business",
-    name: "بيزنس",
-    price: "299",
-    period: "/شهر",
-    description: "للمحلات المتوسطة والكبيرة",
-    icon: Zap,
-    color: "purple",
-    features: [
-      "عدد غير محدود من الزبائن",
-      "إحصائيات متقدمة",
-      "براند مخصص",
-      "رسالة ترحيبية مخصصة",
-      "ملاحظات من الزبون",
-      "صوت تنبيه لدخول زبون جديد",
-      "وقت انتظار أدق",
-    ],
-    cta: "اشترك الآن",
-    popular: true,
-  },
-  {
-    id: "premium",
-    name: "بريميوم",
-    price: "499",
-    period: "/شهر",
-    description: "للسلاسل والفروع المتعددة",
+    id: "lifetime",
+    name: "مدى الحياة",
+    price: "999",
+    period: "مرة واحدة",
+    description: "كل المميزات للأبد",
     icon: Crown,
     color: "amber",
     features: [
-      "كل مميزات بيزنس",
-      "فروع متعددة",
-      "رسائل SMS",
+      "عدد غير محدود من الزبائن",
+      "QR Code ثابت للأبد",
+      "تخصيص كامل (لوجو + ألوان)",
+      "إحصائيات متقدمة",
+      "رسالة ترحيبية مخصصة",
+      "صوت تنبيه لدخول زبون",
       "أولوية في الدعم الفني",
-      "تقارير متقدمة",
-      "API خاص",
     ],
     cta: "اشترك الآن",
-    popular: false,
+    popular: true,
   },
 ];
 
@@ -140,13 +102,13 @@ export default function PricingPage() {
           باقات بسيطة وواضحة
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          اختار الباقة اللي تناسب محلك. أول 100 محل يسجل هياخد الخدمة مجاناً بالكامل!
+          اختار الباقة اللي تناسب محلك. الباقة المجانية متاحة للكل، أو اشترك مرة واحدة في "مدى الحياة".
         </p>
       </section>
 
       {/* Plans Grid */}
-      <section className="max-w-6xl mx-auto px-4 pb-20">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="max-w-4xl mx-auto px-4 pb-20">
+        <div className="grid md:grid-cols-2 gap-8">
           {plans.map((plan) => {
             const colors = colorMap[plan.color];
             return (

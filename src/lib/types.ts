@@ -9,6 +9,10 @@ export interface Shop {
   welcome_message?: string;
   is_active?: boolean;
   notification_sound?: boolean;
+  logo_url?: string;
+  primary_color?: string;
+  qr_code_key?: string;
+  qr_updated_at?: string;
 }
 
 export interface QueueEntry {
@@ -35,7 +39,7 @@ export interface DailyStat {
 export interface Subscription {
   id: string;
   shop_id: string;
-  plan: "free" | "starter" | "business" | "premium";
+  plan: "free" | "starter" | "business" | "premium" | "lifetime";
   status: "active" | "expired" | "suspended";
   started_at: string;
   expires_at: string | null;
@@ -74,6 +78,7 @@ export const PLAN_NAMES: Record<string, string> = {
   starter: "ستارتر",
   business: "بيزنس",
   premium: "بريميوم",
+  lifetime: "مدى الحياة",
 };
 
 export const PLAN_PRICES: Record<string, number> = {
@@ -81,4 +86,5 @@ export const PLAN_PRICES: Record<string, number> = {
   starter: 149,
   business: 299,
   premium: 499,
+  lifetime: 999,
 };

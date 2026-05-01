@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { auth } from "@clerk/nextjs/server";
 
 export async function POST(request: NextRequest) {
@@ -10,7 +11,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, slug, type, service_points, welcome_message } = body;
+    const { name, slug, type, service_points, welcome_message, logo_url, primary_color } = body;
 
     if (!name || !slug) {
       return NextResponse.json(
@@ -46,6 +47,10 @@ export async function POST(request: NextRequest) {
         welcome_message: welcome_message || "",
         is_active: true,
         notification_sound: true,
+        qr_code_key: crypto.randomUUID(),
+        qr_updated_at: new Date().toISOString(),
+        logo_url: logo_url || null,
+        primary_color: primary_color || "#1e40af",
       })
       .select()
       .single();
@@ -57,11 +62,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Auto-create free subscription for the new shop
-    await supabase.from("subscriptions").insert({
+    // Auto-create premium trial subscription for the new shop (30 days)
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+
+    const supabaseAdmin = createAdminClient();
+    await supabaseAdmin.from("subscriptions").insert({
       shop_id: shop.id,
-      plan: "free",
+      plan: "premium",
       status: "active",
+      expires_at: expiresAt.toISOString(),
     });
 
     return NextResponse.json(shop);
@@ -83,7 +93,11 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const includeParam = request.nextUrl.searchParams.get("include");
 
+    const adminUserId = process.env.ADMIN_USER_ID;
+    const userIsAdmin = adminUserId === userId;
+
     const { data: shop, error } = await supabase
+
       .from("shops")
       .select()
       .eq("owner_id", userId)
@@ -93,24 +107,44 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(null, { status: 200 });
     }
 
-    // If subscription data is requested
-    if (includeParam === "subscription") {
-      const { data: subscription } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .eq("shop_id", shop.id)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
+    // Always include subscription for logic
+    const { data: subscription } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("shop_id", shop.id)
+      .eq("status", "active")
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-      return NextResponse.json({
-        ...shop,
-        subscription: subscription || null,
-      });
+    // QR Code Key Rotation Logic (Free Plan)
+    let currentShop = shop;
+    if (subscription?.plan === "free") {
+      const lastUpdate = shop.qr_updated_at ? new Date(shop.qr_updated_at) : new Date(0);
+      const twoDaysAgo = new Date();
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+      if (lastUpdate < twoDaysAgo) {
+        const newKey = crypto.randomUUID();
+        const { data: updatedShop } = await supabase
+          .from("shops")
+          .update({
+            qr_code_key: newKey,
+            qr_updated_at: new Date().toISOString(),
+          })
+          .eq("id", shop.id)
+          .select()
+          .single();
+        if (updatedShop) currentShop = updatedShop;
+      }
     }
 
-    return NextResponse.json(shop);
+    return NextResponse.json({
+      ...currentShop,
+      subscription: subscription || null,
+      isAdmin: userIsAdmin,
+    });
   } catch {
     return NextResponse.json(
       { error: "حدث خطأ غير متوقع" },
@@ -128,13 +162,42 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { welcome_message, notification_sound } = body;
+    const { welcome_message, notification_sound, logo_url, primary_color } = body;
 
     const supabase = await createClient();
+
+    // Check subscription for customization limits
+    const { data: shopCheck } = await supabase
+      .from("shops")
+      .select("id")
+      .eq("owner_id", userId)
+      .single();
+
+    if (!shopCheck) {
+      return NextResponse.json({ error: "المحل غير موجود" }, { status: 404 });
+    }
+
+    const { data: subscription } = await supabase
+      .from("subscriptions")
+      .select("plan")
+      .eq("shop_id", shopCheck.id)
+      .eq("status", "active")
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const isLifetime = subscription?.plan === "lifetime";
 
     const updates: Record<string, unknown> = {};
     if (welcome_message !== undefined) updates.welcome_message = welcome_message;
     if (notification_sound !== undefined) updates.notification_sound = notification_sound;
+    
+    // Limits customization to lifetime plan
+    if (isLifetime) {
+      if (logo_url !== undefined) updates.logo_url = logo_url;
+      if (primary_color !== undefined) updates.primary_color = primary_color;
+    }
 
     const { data: shop, error } = await supabase
       .from("shops")

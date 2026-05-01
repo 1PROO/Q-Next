@@ -20,8 +20,12 @@ function formatWaitTime(minutes: number): string {
 export default function CustomerQueuePage({
   shop,
 }: {
-  shop: Shop;
+  shop: Shop & { subscription?: any };
 }) {
+  const primaryColor = shop.primary_color || "#1e40af";
+  const lightColor = `${primaryColor}15`; // 15 is hex for ~8% opacity
+  const mediumColor = `${primaryColor}40`; // 40 is hex for ~25% opacity
+
   const [customerName, setCustomerName] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
   const [myEntry, setMyEntry] = useState<QueueEntry | null>(null);
@@ -208,14 +212,17 @@ export default function CustomerQueuePage({
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-green-950 dark:to-gray-900 flex items-center justify-center p-4">
         <Card className="w-full max-w-md text-center border-green-200 dark:border-green-800 shadow-xl">
           <CardContent className="p-8">
-            <div className="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-              <CheckCircle2 className="h-10 w-10 text-green-600 dark:text-green-400" />
+            <div 
+              className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse"
+              style={{ backgroundColor: lightColor }}
+            >
+              <CheckCircle2 className="h-10 w-10" style={{ color: primaryColor }} />
             </div>
-            <h1 className="text-3xl font-bold text-green-700 dark:text-green-400 mb-2">
+            <h1 className="text-3xl font-bold mb-2" style={{ color: primaryColor }}>
               دورك الآن!
             </h1>
-            <p className="text-green-600 dark:text-green-500 text-lg mb-4">تفضل للخدمة</p>
-            <div className="text-6xl font-extrabold text-green-700 dark:text-green-400 mb-4">
+            <p className="text-lg mb-4 opacity-80" style={{ color: primaryColor }}>تفضل للخدمة</p>
+            <div className="text-6xl font-extrabold mb-4" style={{ color: primaryColor }}>
               {myEntry.ticket_number}
             </div>
             <p className="text-gray-500 dark:text-gray-400">رقم تذكرتك</p>
@@ -266,19 +273,19 @@ export default function CustomerQueuePage({
               <CardTitle className="text-xl text-gray-700 dark:text-gray-200">رقم تذكرتك</CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <div className="text-7xl font-extrabold text-blue-600 dark:text-blue-400 mb-6">
+              <div className="text-7xl font-extrabold mb-6" style={{ color: primaryColor }}>
                 {myEntry.ticket_number}
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4">
-                  <Users className="h-6 w-6 text-blue-500 dark:text-blue-400 mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                <div className="rounded-xl p-4" style={{ backgroundColor: lightColor }}>
+                  <Users className="h-6 w-6 mx-auto mb-1" style={{ color: primaryColor }} />
+                  <p className="text-2xl font-bold" style={{ color: primaryColor }}>
                     {positionAhead}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">قبلك في الطابور</p>
                 </div>
-                <div className="bg-orange-50 dark:bg-orange-900/30 rounded-xl p-4">
+                <div className="bg-orange-50 dark:bg-orange-900/30 rounded-xl p-4 border border-orange-100 dark:border-orange-800">
                   <Clock className="h-6 w-6 text-orange-500 dark:text-orange-400 mx-auto mb-1" />
                   <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">
                     ~{formatWaitTime(positionAhead * avgServiceTime)}
@@ -344,9 +351,18 @@ export default function CustomerQueuePage({
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center pb-2">
-          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-          </div>
+          {shop.logo_url ? (
+            <div className="w-24 h-24 mx-auto mb-4 overflow-hidden rounded-2xl shadow-sm border dark:border-gray-800 bg-white p-2">
+              <img src={shop.logo_url} alt={shop.name} className="w-full h-full object-contain" />
+            </div>
+          ) : (
+            <div 
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3"
+              style={{ backgroundColor: lightColor }}
+            >
+              <Users className="h-8 w-8" style={{ color: primaryColor }} />
+            </div>
+          )}
           <CardTitle className="text-2xl font-bold dark:text-white">{shop.name}</CardTitle>
           {shop.welcome_message ? (
             <p className="text-gray-600 dark:text-gray-300 mt-1">{shop.welcome_message}</p>
@@ -355,9 +371,12 @@ export default function CustomerQueuePage({
           )}
         </CardHeader>
         <CardContent className="p-6 space-y-4">
-          <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 text-center">
+          <div 
+            className="rounded-xl p-4 text-center border"
+            style={{ backgroundColor: lightColor, borderColor: mediumColor }}
+          >
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">عدد المنتظرين حالياً</p>
-            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{waitingCount}</p>
+            <p className="text-3xl font-bold" style={{ color: primaryColor }}>{waitingCount}</p>
             <p className="text-xs text-gray-400 mt-1">
               وقت الانتظار المتوقع: ~{formatWaitTime(waitingCount * avgServiceTime)}
             </p>
@@ -391,7 +410,8 @@ export default function CustomerQueuePage({
           <Button
             onClick={joinQueue}
             disabled={isJoining}
-            className="w-full py-6 text-lg bg-blue-600 hover:bg-blue-700 rounded-xl"
+            className="w-full py-6 text-lg rounded-xl text-white shadow-lg transition-all active:scale-95"
+            style={{ backgroundColor: primaryColor }}
           >
             {isJoining ? (
               <>

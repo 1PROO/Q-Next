@@ -22,6 +22,8 @@ import {
   ShieldAlert,
   Power,
   PowerOff,
+  Gift,
+  Calendar,
 } from "lucide-react";
 import { AdminSkeleton } from "@/components/loading-skeleton";
 
@@ -122,6 +124,7 @@ export default function AdminPage() {
     starter: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
     business: "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300",
     premium: "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300",
+    lifetime: "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
   };
 
   return (
@@ -253,6 +256,15 @@ export default function AdminPage() {
                         </span>
                         <span>·</span>
                         <span>/q/{shop.slug}</span>
+                        {shop.subscription?.expires_at && (
+                          <>
+                            <span>·</span>
+                            <span className="flex items-center gap-1 text-amber-600 font-medium">
+                              <Calendar className="h-3 w-3" />
+                              ينتهي في: {new Date(shop.subscription.expires_at).toLocaleDateString("ar-EG")}
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
@@ -274,6 +286,7 @@ export default function AdminPage() {
                           <SelectItem value="starter">ستارتر</SelectItem>
                           <SelectItem value="business">بيزنس</SelectItem>
                           <SelectItem value="premium">بريميوم</SelectItem>
+                          <SelectItem value="lifetime">مدى الحياة</SelectItem>
                         </SelectContent>
                       </Select>
 
@@ -302,6 +315,28 @@ export default function AdminPage() {
                           </>
                         )}
                       </Button>
+
+                      <div className="flex items-center border rounded-md overflow-hidden h-8">
+                        <input
+                          type="number"
+                          placeholder="أيام"
+                          className="w-12 h-full text-xs px-1 border-0 focus:ring-0 text-center dark:bg-gray-700"
+                          id={`gift-${shop.id}`}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const input = document.getElementById(`gift-${shop.id}`) as HTMLInputElement;
+                            giftDays(shop.id, parseInt(input.value));
+                            input.value = "";
+                          }}
+                          disabled={actionLoading === shop.id}
+                          className="h-full px-2 rounded-none bg-amber-50 text-amber-700 hover:bg-amber-100 border-r"
+                        >
+                          <Gift className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
