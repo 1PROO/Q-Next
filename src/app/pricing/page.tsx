@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, ArrowLeft, Star, Zap, Crown } from "lucide-react";
+import { CheckCircle2, ArrowLeft, Star, Zap, Crown, Sparkles } from "lucide-react";
 
 const plans = [
   {
@@ -78,13 +78,8 @@ export default function PricingPage() {
       {/* Navbar */}
       <nav className="border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="bg-blue-600 rounded-lg p-1 group-hover:scale-110 transition-transform shadow-lg shadow-blue-200 dark:shadow-none">
-              <img src="/logo.png" alt="Dawrak Logo" className="h-6 w-6 invert brightness-0" />
-            </div>
-            <span className="text-2xl font-extrabold text-blue-600">
-              دورك
-            </span>
+          <Link href="/" className="text-2xl font-extrabold text-blue-600">
+            دورك
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/sign-in">
@@ -106,8 +101,12 @@ export default function PricingPage() {
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
           باقات بسيطة وواضحة
         </h1>
+        <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full text-sm font-bold mb-6">
+          <Sparkles className="h-4 w-4" />
+          هدية: 30 يوم "برو" مجاناً عند التسجيل لأول مرة!
+        </div>
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          اختار الباقة اللي تناسب محلك. الباقة المجانية متاحة للكل، أو اشترك مرة واحدة في "مدى الحياة".
+          اختار الباقة اللي تناسب محلك. الباقة المجانية متاحة للكل، أو امتلك النظام للأبد بضغطة زر.
         </p>
       </section>
 

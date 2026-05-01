@@ -133,8 +133,6 @@ export default function AdminPage() {
 
   const planColors: Record<string, string> = {
     free: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
-    starter: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
-    business: "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300",
     premium: "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300",
     lifetime: "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
   };
@@ -295,9 +293,7 @@ export default function AdminPage() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="free">مجاني</SelectItem>
-                          <SelectItem value="starter">ستارتر</SelectItem>
-                          <SelectItem value="business">بيزنس</SelectItem>
-                          <SelectItem value="premium">بريميوم</SelectItem>
+                          <SelectItem value="premium">برو (تجريبي)</SelectItem>
                           <SelectItem value="lifetime">مدى الحياة</SelectItem>
                         </SelectContent>
                       </Select>

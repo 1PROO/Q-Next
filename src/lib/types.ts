@@ -75,16 +75,12 @@ export const SHOP_TYPES: Record<ShopType, string> = {
 
 export const PLAN_NAMES: Record<string, string> = {
   free: "مجاني",
-  starter: "ستارتر",
-  business: "بيزنس",
-  premium: "بريميوم",
+  premium: "برو (تجريبي)",
   lifetime: "مدى الحياة",
 };
 
 export const PLAN_PRICES: Record<string, number> = {
   free: 0,
-  starter: 149,
-  business: 299,
-  premium: 499,
+  premium: 0,
   lifetime: 999,
 };

@@ -118,9 +118,11 @@ export async function GET(request: NextRequest) {
       .limit(1)
       .maybeSingle();
 
-    // QR Code Key Rotation Logic (Free Plan)
+    // QR Code Key Rotation Logic (Free Plan - only if no active paid/trial plan)
     let currentShop = shop;
-    if (subscription?.plan === "free") {
+    const hasActivePlan = !!subscription && (subscription.plan === "lifetime" || subscription.plan === "premium");
+    
+    if (!hasActivePlan) {
       const lastUpdate = shop.qr_updated_at ? new Date(shop.qr_updated_at) : new Date(0);
       const twoDaysAgo = new Date();
       twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
@@ -187,14 +189,14 @@ export async function PATCH(request: NextRequest) {
       .limit(1)
       .maybeSingle();
 
-    const isLifetime = subscription?.plan === "lifetime";
+    const isProOrLifetime = subscription?.plan === "lifetime" || subscription?.plan === "premium";
 
     const updates: Record<string, unknown> = {};
     if (welcome_message !== undefined) updates.welcome_message = welcome_message;
     if (notification_sound !== undefined) updates.notification_sound = notification_sound;
     
-    // Limits customization to lifetime plan
-    if (isLifetime) {
+    // Limits customization to pro trial or lifetime plan
+    if (isProOrLifetime) {
       if (logo_url !== undefined) updates.logo_url = logo_url;
       if (primary_color !== undefined) updates.primary_color = primary_color;
     }

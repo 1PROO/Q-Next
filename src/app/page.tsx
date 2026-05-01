@@ -69,13 +69,8 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="bg-blue-600 rounded-lg p-1 group-hover:scale-110 transition-transform shadow-lg shadow-blue-200 dark:shadow-none">
-              <img src="/logo.png" alt="Dawrak Logo" className="h-6 w-6 invert brightness-0" />
-            </div>
-            <span className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
-              دورك
-            </span>
+          <Link href="/" className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
+            دورك
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/pricing">

@@ -30,13 +30,8 @@ export default function DashboardLayout({
       <nav className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 sticky top-0 z-50 transition-colors">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="bg-blue-600 rounded-lg p-1 group-hover:scale-110 transition-transform shadow-lg shadow-blue-200 dark:shadow-none">
-                <img src="/logo.png" alt="Dawrak Logo" className="h-6 w-6 invert brightness-0" />
-              </div>
-              <span className="text-xl font-extrabold text-blue-600 dark:text-blue-400">
-                دورك
-              </span>
+            <Link href="/" className="text-xl font-extrabold text-blue-600 dark:text-blue-400">
+              دورك
             </Link>
             <div className="hidden md:flex items-center gap-1">
               {navItems.map((item) => {

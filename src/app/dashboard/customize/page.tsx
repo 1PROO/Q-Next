@@ -63,8 +63,8 @@ export default function CustomizePage() {
 
   if (!shop) return null;
 
-  const subscription = (shop as any).subscription;
-  const isLifetime = subscription?.plan === "lifetime";
+  const subscription = (shop as any)?.subscription;
+  const isProOrLifetime = subscription?.plan === "lifetime" || subscription?.plan === "premium";
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -73,7 +73,7 @@ export default function CustomizePage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">تخصيص الصفحة</h1>
           <p className="text-gray-500 dark:text-gray-400">خصص شكل صفحة الزبائن بشعارك وألوانك</p>
         </div>
-        {!isLifetime && (
+        {!isProOrLifetime && (
           <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
             <Lock className="h-3 w-3 ml-1" />
             ميزة مدفوعة
@@ -81,7 +81,7 @@ export default function CustomizePage() {
         )}
       </div>
 
-      {!isLifetime && (
+      {!isProOrLifetime && (
         <Card className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white border-0 shadow-lg">
           <CardContent className="p-6 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-right">
@@ -102,7 +102,7 @@ export default function CustomizePage() {
         </Card>
       )}
 
-      <Card className={!isLifetime ? "opacity-60 pointer-events-none" : ""}>
+      <Card className={!isProOrLifetime ? "opacity-60 pointer-events-none" : ""}>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <ImageIcon className="h-5 w-5 text-blue-600" />
@@ -133,7 +133,7 @@ export default function CustomizePage() {
         </CardContent>
       </Card>
 
-      <Card className={!isLifetime ? "opacity-60 pointer-events-none" : ""}>
+      <Card className={!isProOrLifetime ? "opacity-60 pointer-events-none" : ""}>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Palette className="h-5 w-5 text-purple-600" />
@@ -179,7 +179,7 @@ export default function CustomizePage() {
           </div>
         )}
         <Button 
-          disabled={!isLifetime || saving} 
+          disabled={!isProOrLifetime || saving} 
           onClick={handleSave}
           className="bg-blue-600 hover:bg-blue-700 px-8"
         >
