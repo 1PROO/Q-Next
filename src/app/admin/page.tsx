@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type Shop, type Subscription, type Plan, type SystemSettings } from "@/lib/types";
+import { type Shop, type Subscription, type Plan, type SystemSettings, SHOP_TYPES, PLAN_NAMES } from "@/lib/types";
 import {
   Store,
   Users,
@@ -137,12 +137,12 @@ export default function AdminPage() {
     setActionLoading(null);
   }
 
-  const fetchChat = async (shopId: string) => {
+  const fetchChat = useCallback(async (shopId: string) => {
     try {
       const res = await fetch(`/api/messages?shop_id=${shopId}`);
       if (res.ok) setChatMessages(await res.json());
     } catch {}
-  };
+  }, []);
 
   const selectChat = (id: string, name: string) => {
     setActiveChat(id);
@@ -320,7 +320,7 @@ export default function AdminPage() {
                           {!shop.is_active && <Badge variant="destructive" className="text-xs">معطل</Badge>}
                         </div>
                         <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                          <span>{shop.type}</span>
+                          <span>{SHOP_TYPES[shop.type as keyof typeof SHOP_TYPES] || shop.type}</span>
                           <span>·</span>
                           <span>{new Date(shop.created_at).toLocaleDateString("ar-EG")}</span>
                           <span>·</span>
@@ -340,21 +340,18 @@ export default function AdminPage() {
                       <div className="flex flex-wrap items-center gap-2 flex-shrink-0 w-full md:w-auto mt-2 md:mt-0">
                         <Select
                           value={shop.subscription?.plan || "free"}
-                          onValueChange={(v) => changePlan(shop.id, v)}
+                          onValueChange={(v) => v && changePlan(shop.id, v)}
                         >
                           <SelectTrigger className="w-28 h-8 text-xs">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {plans.length > 0 ? plans.map(p => (
-                               <SelectItem key={p.slug} value={p.slug}>{p.name_ar}</SelectItem>
-                            )) : (
-                               <>
-                                <SelectItem value="free">مجاني</SelectItem>
-                                <SelectItem value="premium">برو (تجريبي)</SelectItem>
-                                <SelectItem value="lifetime">مدى الحياة</SelectItem>
-                               </>
-                            )}
+                             <SelectItem value="free">مجاني</SelectItem>
+                             <SelectItem value="premium">برو (تجريبي)</SelectItem>
+                             <SelectItem value="lifetime">مدى الحياة</SelectItem>
+                             {plans.filter(p => !['free', 'premium', 'lifetime'].includes(p.slug)).map(p => (
+                                <SelectItem key={p.slug} value={p.slug}>{p.name_ar}</SelectItem>
+                             ))}
                           </SelectContent>
                         </Select>
 
@@ -508,7 +505,14 @@ export default function AdminPage() {
                        )}
                        <div className="min-w-0 flex-1">
                          <p className="font-bold truncate dark:text-white">{shop.name}</p>
-                         <p className="text-xs text-gray-500 truncate">{shop.subscription?.plan === 'lifetime' || shop.subscription?.plan === 'premium' ? 'VIP 👑' : 'مجاني'}</p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {shop.subscription?.plan ? (
+                              <span className={shop.subscription.plan !== 'free' ? "text-amber-600 font-bold" : ""}>
+                                {PLAN_NAMES[shop.subscription.plan as keyof typeof PLAN_NAMES] || shop.subscription.plan} 
+                                {shop.subscription.plan !== 'free' && " 👑"}
+                              </span>
+                            ) : "مجاني"}
+                          </p>
                        </div>
                      </div>
                    )
