@@ -30,6 +30,7 @@ export default function SetupPage() {
   const [facebook, setFacebook] = useState("");
   const [instagram, setInstagram] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
     async function fetchShop() {
