@@ -175,7 +175,8 @@ export default function AdminPage() {
         body: JSON.stringify({ content: text, shop_id: activeChat }),
       });
       if (res.ok) {
-        setChatMessages(prev => [...prev, await res.json()]);
+        const newMessage = await res.json();
+        setChatMessages(prev => [...prev, newMessage]);
       }
     } catch {}
   };
