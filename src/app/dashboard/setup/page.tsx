@@ -26,7 +26,10 @@ export default function SetupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [existingShop, setExistingShop] = useState<Shop | null>(null);
-  const [pageLoading, setPageLoading] = useState(true);
+  const [queueAnnouncement, setQueueAnnouncement] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
 
   useEffect(() => {
     async function fetchShop() {
@@ -40,6 +43,12 @@ export default function SetupPage() {
           setType(data.type);
           setServicePoints(String(data.service_points));
           setWelcomeMessage(data.welcome_message || "");
+          setQueueAnnouncement(data.queue_announcement || "");
+          if (data.social_links) {
+            setFacebook(data.social_links.facebook || "");
+            setInstagram(data.social_links.instagram || "");
+            setWhatsapp(data.social_links.whatsapp || "");
+          }
         }
       }
       setPageLoading(false);
@@ -96,6 +105,12 @@ export default function SetupPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           welcome_message: welcomeMessage,
+          queue_announcement: queueAnnouncement,
+          social_links: {
+            facebook,
+            instagram,
+            whatsapp,
+          }
         }),
       });
       if (res.ok) {
@@ -170,6 +185,62 @@ export default function SetupPage() {
               <p className="text-xs text-gray-400 mt-1">
                 تظهر هذه الرسالة للزبون عند دخوله صفحة الطابور
               </p>
+            </div>
+
+            <div className={`p-4 border rounded-lg ${(!existingShop.subscription || existingShop.subscription.plan === "free") ? "opacity-60 bg-gray-50 dark:bg-gray-900 pointer-events-none" : ""}`}>
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="queueAnnouncement">إعلان في صفحة الطابور</Label>
+                {(!existingShop.subscription || existingShop.subscription.plan === "free") && (
+                  <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded">ميزة برو 👑</span>
+                )}
+              </div>
+              <Input
+                id="queueAnnouncement"
+                placeholder="مثال: خصم 50% بمناسبة الافتتاح!"
+                value={queueAnnouncement}
+                onChange={(e) => setQueueAnnouncement(e.target.value)}
+                className="mt-1.5"
+              />
+            </div>
+
+            <div className={`p-4 border rounded-lg space-y-3 ${(!existingShop.subscription || existingShop.subscription.plan === "free") ? "opacity-60 bg-gray-50 dark:bg-gray-900 pointer-events-none" : ""}`}>
+              <div className="flex items-center justify-between mb-2">
+                <Label>حسابات السوشيال ميديا</Label>
+                {(!existingShop.subscription || existingShop.subscription.plan === "free") && (
+                  <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded">ميزة برو 👑</span>
+                )}
+              </div>
+              
+              <div className="flex gap-2">
+                <span className="bg-gray-100 dark:bg-gray-800 p-2 rounded flex items-center">FB</span>
+                <Input
+                  placeholder="رابط صفحة فيسبوك"
+                  value={facebook}
+                  onChange={(e) => setFacebook(e.target.value)}
+                  className="flex-1 text-left"
+                  dir="ltr"
+                />
+              </div>
+              <div className="flex gap-2">
+                <span className="bg-gray-100 dark:bg-gray-800 p-2 rounded flex items-center">IG</span>
+                <Input
+                  placeholder="رابط حساب انستجرام"
+                  value={instagram}
+                  onChange={(e) => setInstagram(e.target.value)}
+                  className="flex-1 text-left"
+                  dir="ltr"
+                />
+              </div>
+              <div className="flex gap-2">
+                <span className="bg-gray-100 dark:bg-gray-800 p-2 rounded flex items-center">WA</span>
+                <Input
+                  placeholder="رقم الواتساب (مثال: 201000000000)"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  className="flex-1 text-left"
+                  dir="ltr"
+                />
+              </div>
             </div>
 
             {error && (

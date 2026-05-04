@@ -75,6 +75,20 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    if (action === "settings") {
+      const { data: settings } = await supabase.from("system_settings").select("*");
+      const settingsMap = settings?.reduce((acc, curr) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      }, {} as Record<string, any>);
+      return NextResponse.json(settingsMap || {});
+    }
+
+    if (action === "plans") {
+      const { data: plans } = await supabase.from("plans").select("*").order("price", { ascending: true });
+      return NextResponse.json(plans || []);
+    }
+
     // Default: list all shops
     const { data: shops, error } = await supabase
       .from("shops")
@@ -201,7 +215,37 @@ export async function POST(request: NextRequest) {
         });
       }
 
+      // Add Notification
+      await supabase.from("notifications").insert({
+        shop_id,
+        type: "gift",
+        content: `لقد تلقيت هدية من الإدارة: ${days} أيام إضافية في باقة برو!`,
+      });
+
       return NextResponse.json({ success: true, expires_at: newExpiresAt });
+    }
+
+    if (action === "update_settings") {
+      const { key, value } = body;
+      await supabase
+        .from("system_settings")
+        .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+      return NextResponse.json({ success: true });
+    }
+
+    if (action === "update_plan") {
+      const { plan_id, updates } = body;
+      await supabase
+        .from("plans")
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq("id", plan_id);
+      return NextResponse.json({ success: true });
+    }
+
+    if (action === "create_plan") {
+      const { plan } = body;
+      await supabase.from("plans").insert(plan);
+      return NextResponse.json({ success: true });
     }
 
     return NextResponse.json({ error: "إجراء غير معروف" }, { status: 400 });

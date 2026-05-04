@@ -13,6 +13,13 @@ export interface Shop {
   primary_color?: string;
   qr_code_key?: string;
   qr_updated_at?: string;
+  last_active_at?: string;
+  queue_announcement?: string;
+  social_links?: {
+    facebook?: string;
+    instagram?: string;
+    whatsapp?: string;
+  };
 }
 
 export interface QueueEntry {
@@ -84,3 +91,49 @@ export const PLAN_PRICES: Record<string, number> = {
   premium: 0,
   lifetime: 999,
 };
+
+export interface PlanFeatures {
+  remove_branding: boolean;
+  advanced_stats: boolean;
+  static_qr: boolean;
+  custom_branding: boolean;
+  social_links: boolean;
+  custom_welcome: boolean;
+  queue_announcement: boolean;
+  priority_support: boolean;
+  export_data: boolean;
+  custom_sounds: boolean;
+}
+
+export interface Plan {
+  id: string;
+  slug: string;
+  name_ar: string;
+  price: number;
+  duration_days: number | null;
+  features: PlanFeatures;
+  is_active: boolean;
+}
+
+export interface SystemSettings {
+  key: string;
+  value: any;
+}
+
+export interface Notification {
+  id: string;
+  shop_id: string;
+  type: string;
+  content: string;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface Message {
+  id: string;
+  shop_id: string;
+  sender: "admin" | "shop";
+  content: string;
+  is_read: boolean;
+  created_at: string;
+}

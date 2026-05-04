@@ -382,6 +382,13 @@ export default function CustomerQueuePage({
             </p>
           </div>
 
+          {(shop.subscription?.plan === "premium" || shop.subscription?.plan === "lifetime") && shop.queue_announcement && (
+            <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl p-3 flex items-start gap-2">
+              <Bell className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-blue-800 dark:text-blue-200">{shop.queue_announcement}</p>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               اسمك (اختياري)
@@ -440,7 +447,33 @@ export default function CustomerQueuePage({
                           : "خدمات"}
             </Badge>
           </div>
+
+          {/* Pro Features: Social Links */}
+          {(shop.subscription?.plan === "premium" || shop.subscription?.plan === "lifetime") && shop.social_links && (
+            <div className="flex justify-center gap-4 mt-4 border-t pt-4 dark:border-gray-800">
+              {shop.social_links.facebook && (
+                <a href={shop.social_links.facebook} target="_blank" rel="noreferrer" className="text-blue-600 hover:text-blue-700">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+                </a>
+              )}
+              {shop.social_links.instagram && (
+                <a href={shop.social_links.instagram} target="_blank" rel="noreferrer" className="text-pink-600 hover:text-pink-700">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+              )}
+              {shop.social_links.whatsapp && (
+                <a href={shop.social_links.whatsapp} target="_blank" rel="noreferrer" className="text-green-500 hover:text-green-600">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 .006 5.378.006 12.025c0 2.124.551 4.195 1.6 6.015L.034 23.85l5.962-1.564c1.764.957 3.754 1.464 5.795 1.464 6.643 0 12.022-5.378 12.022-12.025C23.813 5.378 18.435 0 12.031 0zM12 21.656c-1.785 0-3.535-.48-5.068-1.39l-.364-.216-3.766.987.999-3.67-.236-.376A9.92 9.92 0 012.022 12c0-5.503 4.48-9.982 9.983-9.982 5.503 0 9.983 4.479 9.983 9.982C22.003 17.502 17.525 21.656 12 21.656zm5.474-7.481c-.301-.151-1.78-.881-2.057-.982-.275-.101-.476-.151-.676.151-.201.301-.777.981-.953 1.183-.175.201-.351.226-.651.075-2.083-1.042-3.486-2.059-4.707-4.148-.201-.341-.018-.521.134-.672.135-.136.301-.351.451-.527.151-.176.201-.301.301-.502.101-.201.05-.376-.025-.526-.075-.151-.676-1.63-.926-2.233-.243-.585-.49-.505-.676-.514-.176-.008-.376-.01-.576-.01-.201 0-.526.075-.802.376-.275.301-1.052 1.028-1.052 2.508 0 1.48 1.077 2.91 1.228 3.112.151.201 2.124 3.243 5.143 4.545.719.31 1.28.495 1.718.634.721.23 1.378.197 1.897.12.58-.087 1.78-.727 2.031-1.429.25-.702.25-1.304.175-1.429-.075-.126-.275-.201-.576-.352z"/></svg>
+                </a>
+              )}
+            </div>
+          )}
         </CardContent>
+        {(!shop.subscription || shop.subscription.plan === "free") && (
+          <div className="text-center pb-4 text-xs text-gray-400">
+            Powered by <a href="/" className="font-bold text-blue-500 hover:underline">Dawrak</a>
+          </div>
+        )}
       </Card>
     </div>
   );

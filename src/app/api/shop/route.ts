@@ -142,10 +142,32 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Update last_active_at asynchronously to track online status
+    if (shop) {
+      supabase
+        .from("shops")
+        .update({ last_active_at: new Date().toISOString() })
+        .eq("id", shop.id)
+        .then();
+    }
+
+    // Fetch unread notifications
+    let notifications = [];
+    if (shop) {
+       const { data: notifs } = await supabase
+         .from("notifications")
+         .select("*")
+         .eq("shop_id", shop.id)
+         .eq("is_read", false)
+         .order("created_at", { ascending: false });
+       if (notifs) notifications = notifs;
+    }
+
     return NextResponse.json({
       ...currentShop,
       subscription: subscription || null,
       isAdmin: userIsAdmin,
+      notifications,
     });
   } catch {
     return NextResponse.json(
@@ -164,9 +186,18 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { welcome_message, notification_sound, logo_url, primary_color } = body;
+    const { welcome_message, notification_sound, logo_url, primary_color, action, notification_id } = body;
 
     const supabase = await createClient();
+
+    if (action === "read_notification") {
+      await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("id", notification_id)
+        .eq("shop_id", (await supabase.from("shops").select("id").eq("owner_id", userId).single()).data?.id);
+      return NextResponse.json({ success: true });
+    }
 
     // Check subscription for customization limits
     const { data: shopCheck } = await supabase

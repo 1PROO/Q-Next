@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
-import { LayoutDashboard, BarChart3, QrCode, Settings, CreditCard, Moon, Sun, Palette } from "lucide-react";
+import { LayoutDashboard, BarChart3, QrCode, Settings, CreditCard, Moon, Sun, Palette, Bell, X, MessageSquare } from "lucide-react";
 import { useDarkMode } from "@/lib/hooks/use-dark-mode";
 import { Button } from "@/components/ui/button";
 
@@ -13,6 +14,7 @@ const navItems = [
   { href: "/dashboard/qrcode", label: "QR Code", icon: QrCode },
   { href: "/dashboard/customize", label: "تخصيص", icon: Palette },
   { href: "/dashboard/subscription", label: "الاشتراك", icon: CreditCard },
+  { href: "/dashboard/support", label: "الدعم", icon: MessageSquare },
   { href: "/dashboard/setup", label: "إعدادات", icon: Settings },
 ];
 
@@ -23,6 +25,33 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const { isDark, toggle } = useDarkMode();
+  const [notifications, setNotifications] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function checkNotifications() {
+      try {
+        const res = await fetch("/api/shop");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.notifications) {
+            setNotifications(data.notifications);
+          }
+        }
+      } catch (e) {}
+    }
+    checkNotifications();
+  }, [pathname]);
+
+  const markAsRead = async (id: string) => {
+    try {
+      await fetch("/api/shop", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "read_notification", notification_id: id }),
+      });
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    } catch (e) {}
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -87,6 +116,26 @@ export default function DashboardLayout({
           })}
         </div>
       </nav>
+
+      {/* Notifications */}
+      {notifications.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 mt-4 space-y-2">
+          {notifications.map(n => (
+            <div key={n.id} className="bg-amber-50 dark:bg-amber-900/40 border border-amber-200 dark:border-amber-800 rounded-lg p-4 flex items-start justify-between">
+              <div className="flex items-start gap-3">
+                <Bell className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+                <div>
+                  <h4 className="font-bold text-amber-800 dark:text-amber-200">تنبيه جديد</h4>
+                  <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{n.content}</p>
+                </div>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => markAsRead(n.id)} className="h-8 w-8 p-0 text-amber-600 hover:bg-amber-100 dark:text-amber-400 dark:hover:bg-amber-900">
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
 
       <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
     </div>

@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/admin(.*)"]);
 
@@ -6,6 +7,15 @@ const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/admin(.*)"]);
 export const proxy = clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
     await auth.protect();
+    
+    // Admin redirection logic
+    const { userId } = await auth();
+    const isAdmin = userId === process.env.ADMIN_USER_ID;
+    const isDashboardPath = req.nextUrl.pathname.startsWith('/dashboard');
+    
+    if (isAdmin && isDashboardPath) {
+      return NextResponse.redirect(new URL('/admin', req.url));
+    }
   }
 });
 
