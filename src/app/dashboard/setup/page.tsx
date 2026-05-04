@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SHOP_TYPES, type ShopType, type Shop } from "@/lib/types";
+import { SHOP_TYPES, type ShopType, type Shop, type Subscription } from "@/lib/types";
 import { Loader2, Store, CheckCircle2 } from "lucide-react";
 
 export default function SetupPage() {

@@ -20,6 +20,7 @@ export interface Shop {
     instagram?: string;
     whatsapp?: string;
   };
+  subscription?: Subscription | null;
 }
 
 export interface QueueEntry {
